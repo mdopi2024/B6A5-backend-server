@@ -3,6 +3,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import router from "./router/index";
 import { notFound } from "./middleware/notFound";
+import { globalErrorHandler } from "./middleware/globalErrorHandler";
 
 dotenv.config();
 
@@ -40,7 +41,7 @@ app.get('/', (req: Request, res: Response) => {
 });
 
 // global error handler
-
+app.use(globalErrorHandler)
 // 404 handler for unmatched routes
 app.use(notFound);
 

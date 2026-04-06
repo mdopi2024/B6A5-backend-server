@@ -1,5 +1,7 @@
 import { Router } from "express";
 import { authController } from "./auth.contorller";
+import validateRequest from "../../middleware/zodValidate";
+import { loginValidationSchema } from "./auth.validator";
 
 
 const router = Router();
@@ -8,6 +10,6 @@ const router = Router();
 router.post("/register", authController.registerUser);
 
 // POST /auth/login - Login existing user
-router.post("/login",authController.loginUser );
+router.post("/login",validateRequest(loginValidationSchema),authController.loginUser );
 
 export const authRoter = router;
