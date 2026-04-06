@@ -1,0 +1,44 @@
+enum Role {
+    ADMIN
+    GUEST
+    MANAGER
+}
+enum RoomType {
+  SINGLE
+  DOUBLE
+  DELUXE
+  SUITE
+  FAMILY
+}
+
+enum BedType {
+  SINGLE
+  DOUBLE
+  QUEEN
+  KING
+}
+
+enum RoomStatus {
+  AVAILABLE
+  BOOKED
+  MAINTENANCE
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+}
+
+enum PaymentStatus {
+  UNPAID
+  PAID
+  REFUNDED
+  FAILED
+}
+
+enum PaymentMethod {
+  SSLCOMMERZ
+  STRIPE
+  PAYPAL
+}

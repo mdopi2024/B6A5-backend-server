@@ -1,0 +1,17 @@
+model Room {
+  id           String     @id @default(uuid(7))
+  roomNumber   String     @unique
+  roomType     RoomType 
+  title        String
+  description  String?
+  pricePerNight Float
+  capacity     Int
+  bedType      BedType
+  images       String
+  status       RoomStatus @default(AVAILABLE)
+  floor        Int?
+  bookings     Booking[]
+  reviews      Review[]
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+}
