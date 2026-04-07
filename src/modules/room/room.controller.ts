@@ -3,7 +3,7 @@ import catchAsync from "../../utils/shared/catchAsync";
 import sendResponse from "../../utils/shared/sendResponse";
 import status from "http-status";
 import {  roomServices } from "./room.services";
-import { CreateRoomInput } from "./room.validator";
+import { CreateRoomInput, UpdateRoomInput } from "./room.validator";
 
 const createRoom = catchAsync(async (req: Request, res: Response) => {
   const payload: CreateRoomInput = req.body;
@@ -28,9 +28,17 @@ const deleteRoom = catchAsync(async (req: Request, res: Response) => {
   sendResponse(res, status.OK, "Room deleted successfully", data);
 });
 
+const updateRoom = catchAsync(async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const payload: UpdateRoomInput = req.body;
+  const data = await roomServices.updateRoom(id as string, payload);
+  sendResponse(res, status.OK, "Room updated successfully", data);
+});
+
 export const roomController = {
   createRoom,
   getAllRooms,
   getRoomById,
   deleteRoom,
+  updateRoom,
 };

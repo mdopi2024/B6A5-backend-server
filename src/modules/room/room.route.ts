@@ -1,7 +1,7 @@
 import { Router } from "express";
 import validateRequest from "../../middleware/zodValidate";
 import { roomController } from "./room.controller";
-import { createRoomSchema } from "./room.validator";
+import { createRoomSchema, updateRoomSchema } from "./room.validator";
 
 const router = Router();
 
@@ -24,6 +24,12 @@ router.get(
 router.delete(
   "/delete-room/:id",
   roomController.deleteRoom
+);
+
+router.patch(
+  "/update-room/:id",
+  validateRequest(updateRoomSchema),
+  roomController.updateRoom
 );
 
 export const roomRouter = router;

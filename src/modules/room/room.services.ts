@@ -1,7 +1,8 @@
 import status from "http-status";
 import { prisma } from "../../lib/prisma";
 import { AppError } from "../../middleware/AppError";
-import { CreateRoomInput } from "./room.validator";
+import { CreateRoomInput, UpdateRoomInput } from "./room.validator";
+
 
 export const createRoom = async (payload: CreateRoomInput) => {
   const { roomNumber, roomType, title, description, pricePerNight, capacity, bedType, images, floor } = payload;
@@ -66,9 +67,39 @@ export const deleteRoom = async (id: string) => {
   return deletedRoom;
 };
 
+export const updateRoom = async (id: string, payload: UpdateRoomInput) => {
+  const room = await prisma.room.findUnique({
+    where: { id },
+  });
+
+  if (!room) {
+    throw new AppError(status.NOT_FOUND, "Room not found");
+  }
+
+  // Check if room number is being updated and if it conflicts with another room
+  if (payload.roomNumber && payload.roomNumber !== room.roomNumber) {
+    const existingRoom = await prisma.room.findUnique({
+      where: { roomNumber: payload.roomNumber },
+    });
+
+    if (existingRoom) {
+      throw new AppError(status.CONFLICT, "Room with this room number already exists");
+    }
+  }
+
+  // Update the room
+  const updatedRoom = await prisma.room.update({
+    where: { id },
+    data: payload,
+  });
+
+  return updatedRoom;
+};
+
 export const roomServices = {
   createRoom,
   getAllRooms,
   getRoomById,
   deleteRoom,
+  updateRoom,
 };
