@@ -1,16 +1,14 @@
 import { Request, Response } from "express";
 import { authServices, CreateUserInput, LoginUserInput } from "./auth.service";
 import catchAsync from "../../utils/shared/catchAsync";
+import sendResponse from "../../utils/shared/sendResponse";
+import status from "http-status";
 
 
 const registerUser = catchAsync(async (req: Request, res: Response) => {
   const payload: CreateUserInput = req.body;
   const data = await authServices.createUser(payload);
-  res.status(201).json({
-    success: true,
-    message: "User created successfully",
-    data: data
-  });
+  sendResponse(res, status.OK, "User registered successfully", data);
 });
 
 const loginUser = catchAsync(async (req: Request, res: Response) => {

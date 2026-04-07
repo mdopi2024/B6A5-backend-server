@@ -1,5 +1,7 @@
+import status from "http-status";
 import { auth } from "../../lib/auth";
 import { prisma } from "../../lib/prisma";
+import { AppError } from "../../middleware/AppError";
 
 export interface CreateUserInput {
   name: string;
@@ -21,7 +23,7 @@ export const createUser = async (payload: CreateUserInput) => {
   });
 
   if (existingUser) {
-    throw new Error("User with this email already exists");
+    throw new AppError(status.CONFLICT, "User with this email already exists");
   }
 
   const data = await auth.api.signUpEmail({
