@@ -21,9 +21,9 @@ router.get(
   roomController.getRoomById
 );
 
-// router.delete(
-//   "/delete-room/:id",
-//   roomController.deleteRoom
-// );
+router.delete(
+  "/delete-room/:id",
+  roomController.deleteRoom
+);
 
 export const roomRouter = router;
