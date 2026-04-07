@@ -13,14 +13,17 @@ export const checkAuth = (...roles: Role[]) => {
             const session = await auth.api.getSession({
                 headers: req.headers as any,
             })
-
+            console.log("Headers:", req.headers)
+            console.log("Session:", session)
+        
+            
             if (!session) {
                 return res.status(status.UNAUTHORIZED).json({
                     success: false,
                     message: "Unauthorized access"
                 })
             }
-
+         
             req.user = {
                 id: session.user.id,
                 name: session.user.name,
