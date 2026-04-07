@@ -16,10 +16,10 @@ router.get(
   roomController.getAllRooms
 );
 
-// router.get(
-//   "/get-room/:id",
-//   roomController.getRoomById
-// );
+router.get(
+  "/get-room/:id",
+  roomController.getRoomById
+);
 
 // router.delete(
 //   "/delete-room/:id",

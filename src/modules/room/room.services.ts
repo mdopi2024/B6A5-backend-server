@@ -38,17 +38,17 @@ export const getAllRooms = async () => {
   return rooms;
 };
 
-// export const getRoomById = async (id: string) => {
-//   const room = await prisma.room.findUnique({
-//     where: { id },
-//   });
+export const getRoomById = async (id: string) => {
+  const room = await prisma.room.findUnique({
+    where: { id },
+  });
 
-//   if (!room) {
-//     throw new AppError(status.NOT_FOUND, "Room not found");
-//   }
+  if (!room) {
+    throw new AppError(status.NOT_FOUND, "Room not found");
+  }
 
-//   return room;
-// };
+  return room;
+};
 
 // export const deleteRoom = async (id: string) => {
 //   const room = await prisma.room.findUnique({
@@ -69,6 +69,6 @@ export const getAllRooms = async () => {
 export const roomServices = {
   createRoom,
   getAllRooms,
-//   getRoomById,
+  getRoomById,
 //   deleteRoom,
 };

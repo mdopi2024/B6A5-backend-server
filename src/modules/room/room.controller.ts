@@ -16,11 +16,11 @@ const getAllRooms = catchAsync(async (req: Request, res: Response) => {
   sendResponse(res, status.OK, "Rooms retrieved successfully", data);
 });
 
-// const getRoomById = catchAsync(async (req: Request, res: Response) => {
-//   const { id } = req.params;
-//   const data = await roomServices.getRoomById(id as string);
-//   sendResponse(res, status.OK, "Room retrieved successfully", data);
-// });
+const getRoomById = catchAsync(async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const data = await roomServices.getRoomById(id as string);
+  sendResponse(res, status.OK, "Room retrieved successfully", data);
+});
 
 // const deleteRoom = catchAsync(async (req: Request, res: Response) => {
 //   const { id } = req.params;
@@ -31,6 +31,6 @@ const getAllRooms = catchAsync(async (req: Request, res: Response) => {
 export const roomController = {
   createRoom,
   getAllRooms,
-//   getRoomById,
+  getRoomById,
 //   deleteRoom,
 };
