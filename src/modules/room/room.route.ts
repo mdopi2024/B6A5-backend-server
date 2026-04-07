@@ -11,10 +11,10 @@ router.post(
   roomController.createRoom
 );
 
-// router.get(
-//   "/get-all-rooms",
-//   roomController.getAllRooms
-// );
+router.get(
+  "/get-all-rooms",
+  roomController.getAllRooms
+);
 
 // router.get(
 //   "/get-room/:id",

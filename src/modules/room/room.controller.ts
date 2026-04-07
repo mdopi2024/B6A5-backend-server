@@ -11,10 +11,10 @@ const createRoom = catchAsync(async (req: Request, res: Response) => {
   sendResponse(res, status.CREATED, "Room created successfully", data);
 });
 
-// const getAllRooms = catchAsync(async (req: Request, res: Response) => {
-//   const data = await roomServices.getAllRooms();
-//   sendResponse(res, status.OK, "Rooms retrieved successfully", data);
-// });
+const getAllRooms = catchAsync(async (req: Request, res: Response) => {
+  const data = await roomServices.getAllRooms();
+  sendResponse(res, status.OK, "Rooms retrieved successfully", data);
+});
 
 // const getRoomById = catchAsync(async (req: Request, res: Response) => {
 //   const { id } = req.params;
@@ -30,7 +30,7 @@ const createRoom = catchAsync(async (req: Request, res: Response) => {
 
 export const roomController = {
   createRoom,
-//   getAllRooms,
+  getAllRooms,
 //   getRoomById,
 //   deleteRoom,
 };

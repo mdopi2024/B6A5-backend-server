@@ -33,10 +33,10 @@ export const createRoom = async (payload: CreateRoomInput) => {
   return room;
 };
 
-// export const getAllRooms = async () => {
-//   const rooms = await prisma.room.findMany();
-//   return rooms;
-// };
+export const getAllRooms = async () => {
+  const rooms = await prisma.room.findMany();
+  return rooms;
+};
 
 // export const getRoomById = async (id: string) => {
 //   const room = await prisma.room.findUnique({
@@ -68,7 +68,7 @@ export const createRoom = async (payload: CreateRoomInput) => {
 
 export const roomServices = {
   createRoom,
-//   getAllRooms,
+  getAllRooms,
 //   getRoomById,
 //   deleteRoom,
 };
