@@ -11,7 +11,7 @@ export interface CreateBookingInput {
   specialRequest?: string;
 }
 
-export const createBooking = async (payload: CreateBookingInput, userId: string) => {
+ const createBooking = async (payload: CreateBookingInput, userId: string) => {
   const { roomId, checkInDate, checkOutDate, specialRequest } = payload;
 
   // Parse dates
@@ -119,4 +119,36 @@ export const createBooking = async (payload: CreateBookingInput, userId: string)
   });
 
   return booking;
+};
+
+ const getAllBookings = async () => {
+  const bookings = await prisma.booking.findMany({
+    include: {
+      user: {
+        select: {
+          id: true,
+          name: true,
+          email: true,
+        },
+      },
+      room: {
+        select: {
+          id: true,
+          roomNumber: true,
+          title: true,
+          pricePerNight: true,
+        },
+      },
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
+
+  return bookings;
+};
+
+export const bookingService = {
+  createBooking,
+  getAllBookings,
 };

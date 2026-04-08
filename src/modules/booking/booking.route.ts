@@ -10,9 +10,15 @@ const router = Router();
 // POST /booking - Create a new booking
 router.post(
   "/room",
-  checkAuth(Role.GUEST, Role.ADMIN, Role.ADMIN), // Assuming guests can book, admins too
+  checkAuth(Role.GUEST, Role.ADMIN, Role.MANAGER),
   validateRequest(createBookingValidationSchema),
   bookingController.createBookingController
+);
+
+// GET /booking - Get all bookings (accessible to all roles)
+router.get(
+  "/all",
+  bookingController.getAllBookingsController
 );
 
 export const bookingRouter = router;
