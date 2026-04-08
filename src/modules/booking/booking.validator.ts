@@ -17,3 +17,23 @@ export const createBookingValidationSchema = z.object({
   message: "Check-out date must be after check-in date",
   path: ["checkOutDate"],
 });
+
+export const updateBookingValidationSchema = z.object({
+  checkInDate: z.string().refine((date) => !isNaN(Date.parse(date)), {
+    message: "Invalid check-in date format",
+  }).optional(),
+  checkOutDate: z.string().refine((date) => !isNaN(Date.parse(date)), {
+    message: "Invalid check-out date format",
+  }).optional(),
+  specialRequest: z.string().optional(),
+}).refine((data) => {
+  if (data.checkInDate && data.checkOutDate) {
+    const checkIn = new Date(data.checkInDate);
+    const checkOut = new Date(data.checkOutDate);
+    return checkOut > checkIn;
+  }
+  return true;
+}, {
+  message: "Check-out date must be after check-in date",
+  path: ["checkOutDate"],
+});

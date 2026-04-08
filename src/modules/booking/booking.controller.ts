@@ -32,9 +32,19 @@ const getMyBookings = catchAsync(async (req: Request, res: Response) => {
   sendResponse(res, status.OK, "User bookings retrieved successfully", data);
 });
 
+const updateBooking = catchAsync(async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const payload = req.body;
+  const userId = req?.user?.id;
+
+  const data = await bookingService.updateBooking(id as string, payload, userId as string);
+  sendResponse(res, status.OK, "Booking updated successfully", data);
+});
+
 export const bookingController = {
   createBookingController,
   getAllBookingsController,
   getBookingById,
   getMyBookings,
+  updateBooking,
 };

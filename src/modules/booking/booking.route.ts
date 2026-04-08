@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { bookingController } from "./booking.controller";
 import validateRequest from "../../middleware/zodValidate";
-import { createBookingValidationSchema } from "./booking.validator";
+import { createBookingValidationSchema, updateBookingValidationSchema } from "./booking.validator";
 import { checkAuth } from "../../middleware/checkAuth";
 import { Role } from "../../generated/prisma/enums";
 
@@ -27,6 +27,14 @@ router.get(
   "/my-bookings",
   checkAuth(Role.GUEST, Role.ADMIN, Role.MANAGER),
   bookingController.getMyBookings
+);
+
+// PATCH /booking/update/:id - Update booking (only PENDING bookings can be updated)
+router.patch(
+  "/update/:id",
+  checkAuth(Role.GUEST, Role.ADMIN, Role.MANAGER),
+  validateRequest(updateBookingValidationSchema),
+  bookingController.updateBooking
 );
 
 // GET /booking/:id - Get booking by ID (protected, all roles can access)
