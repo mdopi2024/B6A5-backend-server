@@ -2,6 +2,7 @@ import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { prisma } from "./prisma";
 import { Role } from "../generated/prisma/enums";
+import { bearer } from "better-auth/plugins";
 
 
 
@@ -9,16 +10,17 @@ export const auth = betterAuth({
     database: prismaAdapter(prisma, {
         provider: "postgresql", // or "mysql", "postgresql", ...etc
     }),
-    trustedOrigins: ["http://localhost:3000","http://localhost:5000"],
-    emailAndPassword:{
-        enabled:true
+    trustedOrigins: ["http://localhost:3000", "http://localhost:5000"],
+    emailAndPassword: {
+        enabled: true
     },
-      user: {
+
+    user: {
         additionalFields: {
             role: {
                 type: "string",
                 required: true,
-                defaultValue:Role.GUEST
+                defaultValue: Role.GUEST
             },
 
             isDeleted: {
@@ -33,5 +35,8 @@ export const auth = betterAuth({
                 defaultValue: null
             },
         }
-    }
+    },
+     plugins: [
+        bearer()
+    ]
 });

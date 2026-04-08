@@ -23,11 +23,11 @@ export const checkAuth = (...roles: Role[]) => {
                     message: "Unauthorized access"
                 })
             }
-         
             req.user = {
                 id: session.user.id,
                 name: session.user.name,
                 email: session.user.email,
+                isdeleted: session.user.isDeleted,
                 role: session.user.role as Role,
             }
 
