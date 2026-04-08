@@ -1,19 +1,19 @@
 model Booking {
-  id            String       @id @default(uuid(7))
-  userId        String
-  roomId        String
-  checkInDate   DateTime
-  checkOutDate  DateTime
-  totalNights   Int
-  totalPrice    Float
-  bookingStatus BookingStatus @default(PENDING)
+  id             String        @id @default(uuid(7))
+  userId         String
+  roomId         String
+  checkInDate    DateTime
+  checkOutDate   DateTime
+  totalNights    Int
+  totalPrice     Decimal       @db.Decimal(10, 2)  // ✅ Float এর বদলে Decimal
+  bookingStatus  BookingStatus @default(PENDING)
   specialRequest String?
 
-  user          User         @relation(fields: [userId], references: [id])
-  room          Room         @relation(fields: [roomId], references: [id] )
+  user  User @relation(fields: [userId], references: [id])
+  room  Room @relation(fields: [roomId], references: [id])
 
-  createdAt     DateTime      @default(now())
-  updatedAt     DateTime      @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([userId])
   @@index([roomId])
