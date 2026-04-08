@@ -148,7 +148,71 @@ export interface CreateBookingInput {
   return bookings;
 };
 
+export const getBookingById = async (bookingId: string) => {
+  const booking = await prisma.booking.findUnique({
+    where: { id: bookingId },
+    include: {
+      user: {
+        select: {
+          id: true,
+          name: true,
+          email: true,
+        },
+      },
+      room: {
+        select: {
+          id: true,
+          roomNumber: true,
+          title: true,
+          pricePerNight: true,
+        },
+      },
+    },
+  });
+
+  if (!booking) {
+    throw new AppError(status.NOT_FOUND, "Booking not found");
+  }
+
+  return booking;
+};
+
+export const getBookingsByUserIdAndEmail = async (userId: string, userEmail: string) => {
+  const bookings = await prisma.booking.findMany({
+    where: {
+      userId,
+      user: {
+        email: userEmail,
+      },
+    },
+    include: {
+      user: {
+        select: {
+          id: true,
+          name: true,
+          email: true,
+        },
+      },
+      room: {
+        select: {
+          id: true,
+          roomNumber: true,
+          title: true,
+          pricePerNight: true,
+        },
+      },
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
+
+  return bookings;
+};
+
 export const bookingService = {
   createBooking,
   getAllBookings,
+  getBookingById,
+  getBookingsByUserIdAndEmail,
 };
