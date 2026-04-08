@@ -26,9 +26,9 @@ const createBooking = async (payload: CreateBookingInput, userId: string) => {
 
   // ✅ Fix 1: Time বাদ দিয়ে শুধু date compare
   const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  checkIn.setHours(0, 0, 0, 0);
-  checkOut.setHours(0, 0, 0, 0);
+  // today.setHours(0, 0, 0, 0);
+  // checkIn.setHours(0, 0, 0, 0);
+  // checkOut.setHours(0, 0, 0, 0);
 
   if (checkIn < today || checkOut < today) {
     throw new AppError(status.BAD_REQUEST, "Booking dates cannot be in the past");
@@ -243,15 +243,15 @@ const updateBooking = async (bookingId: string, payload: UpdateBookingInput, use
   const { checkInDate, checkOutDate, specialRequest } = payload;
 
   // Use existing dates if not provided
-  const newCheckIn = checkInDate ? new Date(checkInDate) : existingBooking.checkInDate;
-  const newCheckOut = checkOutDate ? new Date(checkOutDate) : existingBooking.checkOutDate;
+  const newCheckIn = checkInDate ? new Date(checkInDate + "T00:00:00Z") : existingBooking.checkInDate;
+  const newCheckOut = checkOutDate ? new Date(checkOutDate + "T00:00:00Z") :      existingBooking.checkOutDate;
 
   // Validate new dates if provided
   if (checkInDate || checkOutDate) {
     const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    newCheckIn.setHours(0, 0, 0, 0);
-    newCheckOut.setHours(0, 0, 0, 0);
+    // today.setHours(0, 0, 0, 0);
+    // newCheckIn.setHours(0, 0, 0, 0);
+    // newCheckOut.setHours(0, 0, 0, 0);
 
     if (newCheckIn < today || newCheckOut < today) {
       throw new AppError(status.BAD_REQUEST, "Booking dates cannot be in the past");
