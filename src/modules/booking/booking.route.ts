@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { bookingController } from "./booking.controller";
 import validateRequest from "../../middleware/zodValidate";
-import { createBookingValidationSchema, updateBookingValidationSchema } from "./booking.validator";
+import { createBookingValidationSchema, updateBookingValidationSchema, updateBookingStatusValidationSchema } from "./booking.validator";
 import { checkAuth } from "../../middleware/checkAuth";
 import { Role } from "../../generated/prisma/enums";
 
@@ -35,6 +35,14 @@ router.patch(
   checkAuth(Role.GUEST, Role.ADMIN, Role.MANAGER),
   validateRequest(updateBookingValidationSchema),
   bookingController.updateBooking
+);
+
+// PATCH /booking/status/:id - Update booking status (guests can only cancel PENDING bookings, admins/managers can update anytime)
+router.patch(
+  "/status/:id",
+  checkAuth(Role.GUEST, Role.ADMIN, Role.MANAGER),
+  validateRequest(updateBookingStatusValidationSchema),
+  bookingController.updateBookingStatus
 );
 
 // GET /booking/:id - Get booking by ID (protected, all roles can access)

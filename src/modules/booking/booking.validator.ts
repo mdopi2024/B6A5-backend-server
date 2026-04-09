@@ -37,3 +37,9 @@ export const updateBookingValidationSchema = z.object({
   message: "Check-out date must be after check-in date",
   path: ["checkOutDate"],
 });
+
+export const updateBookingStatusValidationSchema = z.object({
+  bookingStatus: z.enum(["PENDING", "CONFIRMED", "CANCELLED", "CHECKED_IN", "CHECKED_OUT"], {
+    message: "Invalid booking status", // ✅ errorMap → message
+  }),
+});

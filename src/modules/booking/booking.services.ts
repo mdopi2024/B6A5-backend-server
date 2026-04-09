@@ -3,7 +3,7 @@ import status from "http-status";
 import { prisma } from "../../lib/prisma";
 import { AppError } from "../../middleware/AppError";
 import { Decimal } from "@prisma/client/runtime/client";
-import { BookingStatus, RoomStatus } from "../../generated/prisma/enums";
+import { BookingStatus, RoomStatus, Role } from "../../generated/prisma/enums";
 
 export interface CreateBookingInput {
   roomId: string;
@@ -16,6 +16,10 @@ export interface UpdateBookingInput {
   checkInDate?: string;
   checkOutDate?: string;
   specialRequest?: string;
+}
+
+export interface UpdateBookingStatusInput {
+  bookingStatus: BookingStatus;
 }
 
 const createBooking = async (payload: CreateBookingInput, userId: string) => {
@@ -340,10 +344,92 @@ const updateBooking = async (bookingId: string, payload: UpdateBookingInput, use
   return updatedBooking;
 };
 
+
+const updateBookingStatus = async (
+  bookingId: string,
+  payload: UpdateBookingStatusInput,
+  userId: string,
+  userRole: Role
+) => {
+  const { bookingStatus } = payload;
+
+  // Find the existing booking
+  const existingBooking = await prisma.booking.findUnique({
+    where: { id: bookingId },
+    include: {
+      user: { select: { id: true, name: true, email: true } },
+      room: { select: { id: true, roomNumber: true, title: true, pricePerNight: true } },
+    },
+  });
+
+  // Booking not found
+  if (!existingBooking) {
+    throw new AppError(status.NOT_FOUND, "Booking not found");
+  }
+
+  // Guest permission check
+  if (userRole === Role.GUEST) {
+    // Guest can only update their own booking
+    if (existingBooking.userId !== userId) {
+      throw new AppError(status.FORBIDDEN, "You can only update your own bookings");
+    }
+
+    // Guest can only cancel booking
+    if (bookingStatus !== BookingStatus.CANCELLED) {
+      throw new AppError(status.FORBIDDEN, "Guests can only cancel bookings");
+    }
+
+    // Guest can only cancel PENDING booking
+    if (existingBooking.bookingStatus !== BookingStatus.PENDING) {
+      throw new AppError(status.BAD_REQUEST, "Only PENDING bookings can be cancelled by guests");
+    }
+  }
+
+  // Room status changes based on booking status
+  const roomStatusMap: Partial<Record<BookingStatus, RoomStatus>> = {
+    [BookingStatus.CONFIRMED]: RoomStatus.BOOKED,
+    [BookingStatus.CANCELLED]: RoomStatus.AVAILABLE,
+    [BookingStatus.CHECKED_IN]: RoomStatus.BOOKED,
+    [BookingStatus.CHECKED_OUT]: RoomStatus.AVAILABLE,
+  };
+
+  const newRoomStatus = roomStatusMap[bookingStatus];
+
+  // Update booking and room status together using transaction
+  const updatedBooking = await prisma.$transaction(async (tx) => {
+    // Step 1: Update booking status
+    const booking = await tx.booking.update({
+      where: { id: bookingId },
+      data: { bookingStatus },
+      include: {
+        user: { select: { id: true, name: true, email: true } },
+        room: { select: { id: true, roomNumber: true, title: true, pricePerNight: true } },
+      },
+    });
+
+    // Step 2: Update room status if needed (skip if PENDING)
+    if (newRoomStatus) {
+      await tx.room.update({
+        where: { id: existingBooking.roomId },
+        data: { status: newRoomStatus },
+      });
+    }
+
+    return booking;
+  });
+
+  return updatedBooking;
+};
+
+export const bookingServices = {
+  updateBookingStatus,
+};
+
 export const bookingService = {
   createBooking,
   getAllBookings,
   getBookingById,
   getBookingsByUserIdAndEmail,
   updateBooking,
+  updateBookingStatus,
 };
