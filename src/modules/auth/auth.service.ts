@@ -50,7 +50,14 @@ export const loginUser = async (payload: LoginUserInput) => {
   return data;
 };
 
+export const getAllUsers = async () => {
+  const users = await prisma.user.findMany();
+
+  return users;
+};
+
 export const authServices = {
   createUser,
   loginUser,
+  getAllUsers,
 };
