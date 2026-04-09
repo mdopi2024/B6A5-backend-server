@@ -3,6 +3,7 @@ import status from "http-status";
 import { prisma } from "../../lib/prisma";
 import { AppError } from "../../middleware/AppError";
 import { Decimal } from "@prisma/client/runtime/client";
+import { BookingStatus, RoomStatus } from "../../generated/prisma/enums";
 
 export interface CreateBookingInput {
   roomId: string;
@@ -48,7 +49,7 @@ const createBooking = async (payload: CreateBookingInput, userId: string) => {
     throw new AppError(status.NOT_FOUND, "Room not found");
   }
 
-  if (room.status !== "AVAILABLE") {
+  if (room.status !== RoomStatus.AVAILABLE) {
     throw new AppError(status.BAD_REQUEST, "Room is not available for booking");
   }
 
@@ -77,7 +78,7 @@ const createBooking = async (payload: CreateBookingInput, userId: string) => {
         },
       ],
       bookingStatus: {
-        in: ["PENDING", "CONFIRMED"],
+        in: [BookingStatus.PENDING, BookingStatus.CHECKED_IN,BookingStatus.CONFIRMED],
       },
     },
   });
@@ -216,7 +217,6 @@ export const getBookingsByUserIdAndEmail = async (userId: string, userEmail: str
   return bookings;
 };
 
-
 const updateBooking = async (bookingId: string, payload: UpdateBookingInput, userId: string) => {
   // Get the existing booking
   const existingBooking = await prisma.booking.findUnique({
@@ -236,7 +236,7 @@ const updateBooking = async (bookingId: string, payload: UpdateBookingInput, use
   }
 
   // Check if booking status is PENDING
-  if (existingBooking.bookingStatus !== "PENDING") {
+  if (existingBooking.bookingStatus !== BookingStatus.PENDING) {
     throw new AppError(status.BAD_REQUEST, "Only PENDING bookings can be updated");
   }
 
@@ -287,7 +287,7 @@ const updateBooking = async (bookingId: string, payload: UpdateBookingInput, use
           },
         ],
         bookingStatus: {
-          in: ["PENDING", "CONFIRMED"],
+          in: [BookingStatus.PENDING],
         },
       },
     });
