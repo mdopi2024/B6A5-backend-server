@@ -2,6 +2,7 @@ import status from "http-status";
 import { auth } from "../../lib/auth";
 import { prisma } from "../../lib/prisma";
 import { AppError } from "../../middleware/AppError";
+import { Request } from "express";
 
 export interface CreateUserInput {
   name: string;
@@ -50,6 +51,17 @@ export const loginUser = async (payload: LoginUserInput) => {
   return data;
 };
 
+export const logoutUser = async (req: Request) => {
+  if(req.headers){
+    throw new AppError(status.BAD_REQUEST, "Missing authentication headers");
+  }
+  const data = await auth.api.signOut({
+    headers: req.headers,
+  });
+
+  return data;
+};
+
 export const getAllUsers = async () => {
   const users = await prisma.user.findMany();
 
@@ -77,9 +89,12 @@ export const deleteUser = async (userId: string) => {
   return updatedUser;
 };
 
+
+
 export const authServices = {
   createUser,
   loginUser,
   getAllUsers,
   deleteUser,
+  logoutUser,
 };

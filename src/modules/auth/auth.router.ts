@@ -20,4 +20,7 @@ router.get("/users", checkAuth(Role.ADMIN), authController.getAllUsersController
 // PATCH /auth/delete-users/:id - Delete or restore user (admin only)
 router.patch("/delete-users/:id", checkAuth(Role.ADMIN), authController.deleteUserController);
 
+// POST /auth/logout - Logout user
+router.post("/logout", checkAuth(), authController.logoutUser);
+
 export const authRoter = router;

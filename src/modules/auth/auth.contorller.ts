@@ -29,9 +29,15 @@ const deleteUserController = catchAsync(async (req: Request, res: Response) => {
   sendResponse(res, status.OK, message, data);
 });
 
+const logoutUser = catchAsync(async (req: Request, res: Response) => {
+ const data = await authServices.logoutUser(req);
+  sendResponse(res, status.OK, "User logged out successfully", data);
+});
+
 export const authController = {
   registerUser,
   loginUser,
   getAllUsersController,
   deleteUserController,
+  logoutUser,
 }

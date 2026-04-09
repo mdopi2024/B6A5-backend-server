@@ -3,6 +3,7 @@ import { authRoter } from "../modules/auth/auth.router";
 import { managerRouter } from "../modules/manager/manager.route";
 import { roomRouter } from "../modules/room/room.route";
 import { bookingRouter } from "../modules/booking/booking.route";
+import { reviewRouter } from "../modules/review/review.router";
 
 const router = Router();
 
@@ -10,5 +11,6 @@ router.use("/auth", authRoter);
 router.use("/manager", managerRouter);
 router.use("/room", roomRouter);
 router.use("/booking", bookingRouter);
+router.use("/review", reviewRouter);
 
 export default router
