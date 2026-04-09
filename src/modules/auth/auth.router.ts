@@ -17,4 +17,7 @@ router.post("/login", validateRequest(loginValidationSchema), authController.log
 // GET /auth/users - Get all users (admin only)
 router.get("/users", checkAuth(Role.ADMIN), authController.getAllUsersController);
 
+// PATCH /auth/delete-users/:id - Delete or restore user (admin only)
+router.patch("/delete-users/:id", checkAuth(Role.ADMIN), authController.deleteUserController);
+
 export const authRoter = router;

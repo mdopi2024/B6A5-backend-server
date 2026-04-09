@@ -22,8 +22,16 @@ const getAllUsersController = catchAsync(async (req: Request, res: Response) => 
   sendResponse(res, status.OK, "Users retrieved successfully", data);
 });
 
+const deleteUserController = catchAsync(async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const data = await authServices.deleteUser(id as string);
+  const message = data.isDeleted ? "User deleted successfully" : "User restored successfully";
+  sendResponse(res, status.OK, message, data);
+});
+
 export const authController = {
   registerUser,
   loginUser,
   getAllUsersController,
+  deleteUserController,
 }

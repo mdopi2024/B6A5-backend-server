@@ -56,8 +56,30 @@ export const getAllUsers = async () => {
   return users;
 };
 
+export const deleteUser = async (userId: string) => {
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+  });
+
+  if (!user) {
+    throw new AppError(status.NOT_FOUND, "User not found");
+  }
+
+  const isCurrentlyDeleted = user.isDeleted;
+  const updatedUser = await prisma.user.update({
+    where: { id: userId },
+    data: {
+      isDeleted: !isCurrentlyDeleted,
+      deletedAt: !isCurrentlyDeleted ? new Date() : null,
+    },
+  });
+
+  return updatedUser;
+};
+
 export const authServices = {
   createUser,
   loginUser,
   getAllUsers,
+  deleteUser,
 };
