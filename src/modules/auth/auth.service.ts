@@ -3,6 +3,9 @@ import { auth } from "../../lib/auth";
 import { prisma } from "../../lib/prisma";
 import { AppError } from "../../middleware/AppError";
 import { Request } from "express";
+import { Role } from "../../generated/prisma/browser";
+
+
 
 export interface CreateUserInput {
   name: string;
@@ -68,6 +71,14 @@ export const getAllUsers = async () => {
   return users;
 };
 
+const getUserById = async (userId: string) => {
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+  });
+
+  return user;
+};
+
 export const deleteUser = async (userId: string) => {
   const user = await prisma.user.findUnique({
     where: { id: userId },
@@ -89,6 +100,25 @@ export const deleteUser = async (userId: string) => {
   return updatedUser;
 };
 
+export const updateUserRole = async (id: string, role: Role) => {
+    // Check if user exists
+    const existingUser = await prisma.user.findUnique({
+        where: { id },
+    });
+
+    if (!existingUser) {
+        throw new AppError(status.NOT_FOUND, "User not found");
+    }
+
+    // Update role
+    const updatedUser = await prisma.user.update({
+        where: { id },
+        data:  role ,
+    });
+
+    return updatedUser;
+};
+
 
 
 export const authServices = {
@@ -97,4 +127,6 @@ export const authServices = {
   getAllUsers,
   deleteUser,
   logoutUser,
+  updateUserRole,
+  getUserById,
 };
