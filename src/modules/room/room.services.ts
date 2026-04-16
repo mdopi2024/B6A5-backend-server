@@ -2,6 +2,7 @@ import status from "http-status";
 import { prisma } from "../../lib/prisma";
 import { AppError } from "../../middleware/AppError";
 import { CreateRoomInput, UpdateRoomInput } from "./room.validator";
+import { RoomStatus } from './../../generated/prisma/enums';
 
 
 export const createRoom = async (payload: CreateRoomInput) => {
@@ -60,13 +61,18 @@ export const deleteRoom = async (id: string) => {
   if (!room) {
     throw new AppError(status.NOT_FOUND, "Room not found");
   }
-
+  
+  if(room.status=== RoomStatus.BOOKED){
+    throw new AppError(status.FORBIDDEN , "This room is currently booked and cannot be deleted")
+  }
   const deletedRoom = await prisma.room.delete({
     where: { id },
   });
 
   return deletedRoom;
 };
+
+
 
 export const updateRoom = async (id: string, payload: UpdateRoomInput) => {
   const room = await prisma.room.findUnique({
