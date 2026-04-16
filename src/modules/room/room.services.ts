@@ -7,6 +7,7 @@ import { CreateRoomInput, UpdateRoomInput } from "./room.validator";
 export const createRoom = async (payload: CreateRoomInput) => {
   const { roomNumber, roomType, title, description, pricePerNight, capacity, bedType, images, floor } = payload;
 
+
   // Check if room number already exists
   const existingRoom = await prisma.room.findUnique({
     where: { roomNumber },
