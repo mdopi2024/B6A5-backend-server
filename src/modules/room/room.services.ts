@@ -72,8 +72,6 @@ export const deleteRoom = async (id: string) => {
   return deletedRoom;
 };
 
-
-
 export const updateRoom = async (id: string, payload: UpdateRoomInput) => {
   const room = await prisma.room.findUnique({
     where: { id },

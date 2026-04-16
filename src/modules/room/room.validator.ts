@@ -12,7 +12,7 @@ export const createRoomSchema = z.object({
   bedType: z.enum(["SINGLE", "DOUBLE", "QUEEN", "KING"], {
     message: "Invalid bed type",
   }),
-  images: z.string().min(1, { message: "Images are required" }),
+  images: z.string().optional(),
   floor: z.number().int().min(0).optional(),
 });
 
