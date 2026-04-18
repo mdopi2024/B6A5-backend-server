@@ -67,8 +67,8 @@ Built with **Node.js**, **Express.js**, and **PostgreSQL**, this system uses **B
 
 ---
 
-### 👨‍💼 Staff Management
-- Manage staff roles & departments
+### 👨‍💼 Staff / Manager Management
+- Manage managers/staff roles & responsibilities
 
 ---
 
@@ -79,51 +79,79 @@ Built with **Node.js**, **Express.js**, and **PostgreSQL**, this system uses **B
 
 ## 📡 REST API Endpoints
 
+> Base URL example: `http://localhost:5000/api`
+
+---
+
 ### 🔐 Auth APIs
 
-| Method | Endpoint | Description | Auth Required | Example Body |
-|--------|----------|------------|---------------|--------------|
-| POST | `/api/v1/auth/register` | Register user | ❌ | `{ "name": "John Doe", "email": "john@example.com", "password": "123456", "role": "guest" }` |
-| POST | `/api/v1/auth/login` | Login user | ❌ | `{ "email": "john@example.com", "password": "123456" }` |
-| POST | `/api/v1/auth/logout` | Logout | ✅ | `{}` |
-| GET | `/api/v1/auth/me` | Current user | ✅ | - |
+| Method | Endpoint | Description | Auth |
+|--------|----------|------------|------|
+| POST | `/api/auth/register` | Register user | ❌ |
+| POST | `/api/auth/login` | Login user | ❌ |
+| POST | `/api/auth/logout` | Logout | ✅ |
+| GET | `/api/auth/me` | Current user | ✅ |
 
 ---
 
 ### 🛏️ Room APIs
 
-| Method | Endpoint | Description | Auth Required |
-|--------|----------|------------|---------------|
-| GET | `/api/v1/rooms` | Get all rooms | ❌ |
-| GET | `/api/v1/rooms/:id` | Get room | ❌ |
-| POST | `/api/v1/rooms` | Add room | ✅ (Admin) |
-| PUT | `/api/v1/rooms/:id` | Update room | ✅ (Admin) |
-| DELETE | `/api/v1/rooms/:id` | Delete room | ✅ (Admin) |
+| Method | Endpoint | Description | Auth |
+|--------|----------|------------|------|
+| GET | `/api/room` | Get all rooms | ❌ |
+| GET | `/api/room/:id` | Get room | ❌ |
+| POST | `/api/room` | Add room | ✅ (Admin) |
+| PUT | `/api/room/:id` | Update room | ✅ (Admin) |
+| DELETE | `/api/room/:id` | Delete room | ✅ (Admin) |
 
 ---
 
 ### 📅 Booking APIs
 
-| Method | Endpoint | Description | Auth Required |
-|--------|----------|------------|---------------|
-| GET | `/api/v1/bookings` | All bookings | ✅ (Admin) |
-| POST | `/api/v1/bookings` | Create booking | ✅ |
-| PUT | `/api/v1/bookings/:id` | Update booking | ✅ |
-| DELETE | `/api/v1/bookings/:id` | Cancel booking | ✅ |
+| Method | Endpoint | Description | Auth |
+|--------|----------|------------|------|
+| GET | `/api/booking` | All bookings | ✅ (Admin) |
+| GET | `/api/booking/:id` | Get booking | ✅ |
+| POST | `/api/booking` | Create booking | ✅ |
+| PUT | `/api/booking/:id` | Update booking | ✅ |
+| DELETE | `/api/booking/:id` | Cancel booking | ✅ |
+
+---
+
+### 👨‍💼 Manager APIs
+
+| Method | Endpoint | Description | Auth |
+|--------|----------|------------|------|
+| GET | `/api/manager` | Get all managers | ✅ (Admin) |
+| POST | `/api/manager` | Add manager | ✅ (Admin) |
+| PUT | `/api/manager/:id` | Update manager | ✅ (Admin) |
+| DELETE | `/api/manager/:id` | Delete manager | ✅ (Admin) |
+
+---
+
+### ⭐ Review APIs
+
+| Method | Endpoint | Description | Auth |
+|--------|----------|------------|------|
+| GET | `/api/review` | Get all reviews | ❌ |
+| POST | `/api/review` | Add review | ✅ |
+| DELETE | `/api/review/:id` | Delete review | ✅ |
 
 ---
 
 ### 💳 Payment APIs (Stripe)
 
-| Method | Endpoint | Description | Auth Required | Example Body |
-|--------|----------|------------|---------------|--------------|
-| POST | `/api/v1/payments/create-intent` | Create Stripe payment intent | ✅ | `{ "bookingId": "uuid", "amount": 20000 }` |
-| POST | `/api/v1/payments/confirm` | Confirm payment | ✅ | `{ "paymentIntentId": "pi_xxx" }` |
-| GET | `/api/v1/payments/:bookingId` | Get payment | ✅ | - |
-| GET | `/api/v1/payments/invoice/:bookingId` | Get invoice | ✅ | - |
-
+| Method | Endpoint | Description | Auth | Example Body |
+|--------|----------|------------|------|--------------|
+| POST | `/api/payment/create-intent` | Create payment intent | ✅ | `{ "bookingId": "uuid", "amount": 20000 }` |
+| POST | `/api/payment/confirm` | Confirm payment | ✅ | `{ "paymentIntentId": "pi_xxx" }` |
+| GET | `/api/payment/:bookingId` | Get payment | ✅ | - |
+| GET | `/api/payment/invoice/:bookingId` | Get invoice | ✅ | - |
 
 ---
+
+
+## 🛠️ Getting Started
 
 ## 🛠️ Getting Started
 
@@ -131,15 +159,14 @@ Built with **Node.js**, **Express.js**, and **PostgreSQL**, this system uses **B
 - Node.js
 - PostgreSQL
 
-### Installation
+### 📥 Installation
 
 ```bash
 git clone #
 cd hotel-management-backend
 npm install
 
-
-### Create .env file:
+## Create .env file:
 
 PORT=5000
 DATABASE_URL=postgresql://username:password@localhost:5432/hotel_db
@@ -152,7 +179,7 @@ BETTER_AUTH_URL=http://localhost:5000
 STRIPE_SECRET_KEY=your_stripe_secret
 STRIPE_WEBHOOK_SECRET=your_webhook_secret
 
-### Run Server
+## Run Server
 
 # Development
 npm run dev
