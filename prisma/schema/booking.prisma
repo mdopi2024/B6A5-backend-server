@@ -5,12 +5,14 @@ model Booking {
   checkInDate    DateTime
   checkOutDate   DateTime
   totalNights    Int
-  totalPrice     Decimal       @db.Decimal(10, 2)  // ✅ Float এর বদলে Decimal
+  totalPrice     Decimal       @db.Decimal(10, 2) // ✅ Float এর বদলে Decimal
   bookingStatus  BookingStatus @default(PENDING)
+  paymentStatus  PaymentStatus @default(UNPAID)
   specialRequest String?
 
-  user  User @relation(fields: [userId], references: [id])
-  room  Room @relation(fields: [roomId], references: [id])
+  user    User     @relation(fields: [userId], references: [id])
+  room    Room     @relation(fields: [roomId], references: [id])
+  payment Payment?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

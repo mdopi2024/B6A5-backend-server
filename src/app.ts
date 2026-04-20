@@ -7,13 +7,14 @@ import { globalErrorHandler } from "./middleware/globalErrorHandler";
 import { auth } from "./lib/auth";
 import { toNodeHandler } from "better-auth/node";
 
+import { paymentController } from "./modules/payment/payment.controller";
+
 dotenv.config();
 
 export const app: Application = express();
-console.log(process.env.CLIENT_URL);
 const allowedOrigins = process.env.CLIENT_URL
     ? process.env.CLIENT_URL.split(",").map((url) => url.trim())
-    : [process.env.URL || "http://localhost:3000" ];
+    : [process.env.URL || "http://localhost:3000"];
 
 const corsOptions = {
     origin: (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
@@ -25,13 +26,16 @@ const corsOptions = {
     },
     credentials: true,
 };
+
+
 // Enable URL-encoded form data parsing
 app.use(express.urlencoded({ extended: true }));
 app.use(cors(corsOptions));
 app.options("/{*path}", cors(corsOptions));
 // Middleware to parse JSON bodies
-app.use(express.json());
 
+app.post('/webhook', express.raw({ type: "application/json" }), paymentController.handleStripeWebhooEvent)
+app.use(express.json());
 app.use("/api/auth/*splat", toNodeHandler(auth));
 // API routes
 app.use("/api/v1", router);
