@@ -227,10 +227,6 @@ const createBooking = async (payload: CreateBookingInput, userId: string) => {
       throw new AppError(status.NOT_FOUND, "Room not found");
     }
 
-    if (room.status !== RoomStatus.AVAILABLE) {
-      throw new AppError(status.BAD_REQUEST, "Room is not available for booking");
-    }
-
     // ✅ Conflict check transaction এর ভেতরে
     const conflictingBooking = await tx.booking.findFirst({
       where: {
@@ -316,7 +312,7 @@ console.log("booking_id",result.booking.id)
       line_items: [
         {
           price_data: {
-            currency: "bdt",
+            currency: "usd",
             product_data: {
               name: `Room booking: ${result.room.title}`,
             },
@@ -331,8 +327,8 @@ console.log("booking_id",result.booking.id)
         bookingId: result.booking.id,
         paymentId: result.payment.id,
       },
-      success_url: `${envVar.FRONTEND_URL}/payment-success`,
-      cancel_url: `${envVar.FRONTEND_URL}/payment-success`,
+      success_url: `${envVar.FRONTEND_URL}/create-booking/success`,
+      cancel_url: `${envVar.FRONTEND_URL}/create-booking/cancel`,
     });
   } catch (error:any) {
     // Network error, invalid key, wrong data ইত্যাদি

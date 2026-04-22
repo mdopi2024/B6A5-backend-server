@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import Stripe from "stripe"
 import { prisma } from "../../lib/prisma"
-import { PaymentStatus } from "../../generated/prisma/enums"
+import { BookingStatus, PaymentStatus } from "../../generated/prisma/enums"
 
 
 
@@ -46,7 +46,8 @@ const handleStripeWebhookEvent = async (event: Stripe.Event) => {
                         id: bookingId
                     },
                     data: {
-                        paymentStatus: session.payment_status === "paid" ? PaymentStatus.PAID : PaymentStatus.UNPAID
+                        paymentStatus: session.payment_status === "paid" ? PaymentStatus.PAID : PaymentStatus.UNPAID,
+                        bookingStatus: session.payment_status === "paid" ? BookingStatus.CONFIRMED : BookingStatus.PENDING
                     }
                 });
 
@@ -60,6 +61,7 @@ const handleStripeWebhookEvent = async (event: Stripe.Event) => {
                         paymentGatewayData: session as any
                     }
                 })
+
             })
 
             console.log(`Processed checkout.session.completed for booking ${booking} and payment ${paymentId}`);
