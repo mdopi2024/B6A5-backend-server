@@ -145,7 +145,23 @@ var auth = betterAuth({
   },
   plugins: [
     bearer()
-  ]
+  ],
+  session: {
+    cookieCache: {
+      enabled: true,
+      maxAge: 5 * 60
+      // 5 minutes
+    }
+  },
+  advanced: {
+    cookiePrefix: "better-auth",
+    useSecureCookies: process.env.NODE_ENV === "production",
+    crossSubDomainCookies: {
+      enabled: false
+    },
+    disableCSRFCheck: true
+    // Allow requests without Origin header (Postman, mobile apps, etc.)
+  }
 });
 
 // src/middleware/AppError.ts
@@ -662,7 +678,6 @@ import Stripe from "stripe";
 // src/config/env.ts
 var loadEnv = () => {
   const envList = [
-    "CLIENT_URL",
     "PORT",
     "STRIPE_WEBHOOK_SECRET",
     "STRIPE_SECRET_KEY",
@@ -670,7 +685,8 @@ var loadEnv = () => {
     "BETTER_AUTH_SECRET",
     "NODE_ENV",
     "DATABASE_URL",
-    "FRONTEND_URL"
+    "PROD_APP_URL",
+    "APP_URL"
   ];
   envList.forEach((env) => {
     if (!process.env[env]) {
@@ -678,7 +694,6 @@ var loadEnv = () => {
     }
   });
   return {
-    CLIENT_URL: process.env.CLIENT_URL,
     PORT: process.env.PORT,
     STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET,
     STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,
@@ -686,7 +701,8 @@ var loadEnv = () => {
     BETTER_AUTH_SECRET: process.env.BETTER_AUTH_SECRET,
     NODE_ENV: process.env.NODE_ENV,
     DATABASE_URL: process.env.DATABASE_URL,
-    FRONTEND_URL: process.env.FRONTEND_URL
+    PROD_APP_URL: process.env.PROD_APP_URL,
+    APP_URL: process.env.APP_URL
   };
 };
 var envVar = loadEnv();
@@ -1604,24 +1620,33 @@ var paymentController = {
 // src/app.ts
 dotenv.config();
 var app = express();
-var allowedOrigins = process.env.CLIENT_URL ? process.env.CLIENT_URL.split(",").map((url) => url.trim()) : [process.env.URL || "http://localhost:3000"];
-var corsOptions = {
-  origin: (origin, callback) => {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error("CORS policy: Origin not allowed"));
-    }
-  },
-  credentials: true
-};
+var allowedOrigins = [
+  envVar.APP_URL || "http://localhost:3000",
+  envVar.PROD_APP_URL
+  // Production frontend URL
+].filter(Boolean);
 app.post(
   "/webhook",
   express.raw({ type: "application/json" }),
   paymentController.handleStripeWebhooEvent
 );
-app.use(cors(corsOptions));
-app.options("/{*path}", cors(corsOptions));
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      if (!origin) return callback(null, true);
+      const isAllowed = allowedOrigins.includes(origin) || /^https:\/\/next-blog-client.*\.vercel\.app$/.test(origin) || /^https:\/\/.*\.vercel\.app$/.test(origin);
+      if (isAllowed) {
+        callback(null, true);
+      } else {
+        callback(new Error(`Origin ${origin} not allowed by CORS`));
+      }
+    },
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization", "Cookie"],
+    exposedHeaders: ["Set-Cookie"]
+  })
+);
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use("/api/auth/*splat", toNodeHandler(auth));
