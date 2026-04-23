@@ -282,10 +282,10 @@ const createBooking = async (payload: CreateBookingInput, userId: string) => {
     });
 
     // ✅ Room status update
-    await tx.room.update({
-      where: { id: room.id },
-      data: { status: RoomStatus.BOOKED },
-    });
+    // await tx.room.update({
+    //   where: { id: room.id },
+    //   data: { status: RoomStatus.AVAILABLE },
+    // });
 
     // ✅ Payment record create
     const transactionId = String(uuidv7());
@@ -617,9 +617,7 @@ const updateBookingStatus = async (
 
   // Room status changes based on booking status
   const roomStatusMap: Partial<Record<BookingStatus, RoomStatus>> = {
-    [BookingStatus.CONFIRMED]: RoomStatus.BOOKED,
     [BookingStatus.CANCELLED]: RoomStatus.AVAILABLE,
-    [BookingStatus.CHECKED_IN]: RoomStatus.BOOKED,
     [BookingStatus.CHECKED_OUT]: RoomStatus.AVAILABLE,
   };
 

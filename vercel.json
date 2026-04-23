@@ -1,3 +1,5 @@
+
+
 {
   "version": 2,
   "builds": [
@@ -7,6 +9,13 @@
     }
   ],
   "routes": [
+    {
+      "src": "/webhook",
+      "dest": "/api/index.js",
+      "headers": {
+        "x-vercel-no-body-parsing": "1"
+      }
+    },
     {
       "src": "/(.*)",
       "dest": "/api/index.js"

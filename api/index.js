@@ -120,7 +120,7 @@ var auth = betterAuth({
     provider: "postgresql"
     // or "mysql", "postgresql", ...etc
   }),
-  trustedOrigins: ["http://localhost:3000", "http://localhost:5000"],
+  trustedOrigins: ["https://boshonto-totel-management-frontend.vercel.app", "http://localhost:3000"],
   emailAndPassword: {
     enabled: true
   },
@@ -686,7 +686,8 @@ var loadEnv = () => {
     "NODE_ENV",
     "DATABASE_URL",
     "PROD_APP_URL",
-    "APP_URL"
+    "APP_URL",
+    "FRONTEND_URL"
   ];
   envList.forEach((env) => {
     if (!process.env[env]) {
@@ -702,7 +703,8 @@ var loadEnv = () => {
     NODE_ENV: process.env.NODE_ENV,
     DATABASE_URL: process.env.DATABASE_URL,
     PROD_APP_URL: process.env.PROD_APP_URL,
-    APP_URL: process.env.APP_URL
+    APP_URL: process.env.APP_URL,
+    FRONTEND_URL: process.env.FRONTEND_URL
   };
 };
 var envVar = loadEnv();
@@ -780,10 +782,6 @@ var createBooking = async (payload, userId) => {
         user: { select: { id: true, name: true, email: true } },
         room: { select: { id: true, roomNumber: true, title: true, pricePerNight: true } }
       }
-    });
-    await tx.room.update({
-      where: { id: room.id },
-      data: { status: RoomStatus.BOOKED }
     });
     const transactionId = String(uuidv7());
     const payment = await tx.payment.create({
@@ -1052,9 +1050,7 @@ var updateBookingStatus = async (bookingId, payload, userId, userRole) => {
     }
   }
   const roomStatusMap = {
-    [BookingStatus.CONFIRMED]: RoomStatus.BOOKED,
     [BookingStatus.CANCELLED]: RoomStatus.AVAILABLE,
-    [BookingStatus.CHECKED_IN]: RoomStatus.BOOKED,
     [BookingStatus.CHECKED_OUT]: RoomStatus.AVAILABLE
   };
   const newRoomStatus = roomStatusMap[bookingStatus];

@@ -10,10 +10,10 @@ Built with **Node.js**, **Express.js**, and **PostgreSQL**, this system uses **B
 
 | Resource | URL |
 |----------|-----|
-| 🌐 Frontend Repository | # |
-| 🖥️ Backend Repository | # |
-| 🚀 Live Demo | # |
-| 📡 API Base URL | # |
+| 🌐 Frontend Repository | https://github.com/mdopi2024/B6A5-CLIENT-SIDE|
+| 🖥️ Backend Repository | https://github.com/mdopi2024/B6A5-backend-server |
+| 🚀 Live Demo | https://boshonto-totel-management-frontend.vercel.app |
+
 
 ---
 

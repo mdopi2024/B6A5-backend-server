@@ -10,6 +10,7 @@ interface EnvConfig {
     PORT: string
     PROD_APP_URL:string,
     APP_URL:string
+    FRONTEND_URL:string
 }
 
 
@@ -25,6 +26,7 @@ const loadEnv = (): EnvConfig => {
         "DATABASE_URL",
         "PROD_APP_URL",
         "APP_URL",
+        "FRONTEND_URL"
 
     ]
 
@@ -45,6 +47,7 @@ const loadEnv = (): EnvConfig => {
         DATABASE_URL: process.env.DATABASE_URL as string,
         PROD_APP_URL: process.env.PROD_APP_URL as string,
         APP_URL: process.env.APP_URL as string,
+        FRONTEND_URL: process.env.FRONTEND_URL as string,
     };
 
 }
